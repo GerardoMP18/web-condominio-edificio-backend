@@ -19,10 +19,10 @@ class DBStorage():
         Method that initializes the
         connection to the database
         """
-        self.db = MySQLdb.connect(user='root', passwd='1999151',
-                                  db='gbs_dev_db', host='localhost',
-                                  port=3306,
-                                  cursorclass=MySQLdb.cursors.DictCursor)
+        # self.db = MySQLdb.connect(user='root', passwd='mysql',
+        #                           db='gbs_dev_db', host='localhost',
+        #                           port=3306,
+        #                           cursorclass=MySQLdb.cursors.DictCursor)
 
         self.cursor = self.db.cursor()
 
