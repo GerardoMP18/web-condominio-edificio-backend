@@ -3,7 +3,6 @@
 Flask Application
 """
 from flask import Flask, jsonify
-from models import storage
 from api.views import app_views
 
 
