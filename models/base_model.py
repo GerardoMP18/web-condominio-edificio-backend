@@ -26,7 +26,7 @@ class BaseModel:
         """
         return "[{}] {}".format(type(self).__name__, self.__dict__)
 
-    def new(self):
+    def new(self, procedure):
         """
         Method that sends the dictionary full of object information
         to the create method of Db_storage. If the dictionary contains
@@ -38,7 +38,7 @@ class BaseModel:
             encrypt_pwd = hashlib.md5(dict_result['password'].encode())
             dict_result['password'] = encrypt_pwd.hexdigest()
 
-        models.storage.create(dict_result)
+        models.storage.create(dict_result, procedure)
 
     def to_dict(self):
         """
