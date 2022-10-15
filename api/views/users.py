@@ -72,7 +72,7 @@ def post_user():
 
     data = request.get_json()
     instance = User(**data)
-    instance.new()
+    instance.new('sp_add_user')
 
     return jsonify(instance.to_dict()), 201
 
