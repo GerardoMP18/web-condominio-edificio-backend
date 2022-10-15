@@ -19,10 +19,10 @@ class DBStorage():
         Method that initializes the
         connection to the database
         """
-        # self.db = MySQLdb.connect(user='root', passwd='mysql',
-        #                           db='gbs_dev_db', host='localhost',
-        #                           port=3306,
-        #                           cursorclass=MySQLdb.cursors.DictCursor)
+        self.db = MySQLdb.connect(user='root', passwd='1999151',
+                                  db='gbs_dev_db', host='localhost',
+                                  port=3306,
+                                  cursorclass=MySQLdb.cursors.DictCursor)
 
         self.cursor = self.db.cursor()
 
@@ -43,7 +43,7 @@ class DBStorage():
 
         return dict_result
 
-    def create(self, dic={}):
+    def create(self, dic, procedure):
         """
         Method that adds values to the
         indicated table of the current session
@@ -53,7 +53,7 @@ class DBStorage():
         for values in dic.values():
             lis.append(values)
 
-        self.cursor.callproc("sp_add_user", lis)
+        self.cursor.callproc(procedure, lis)
         self.db.commit()
 
     def get(self, tablename, id):
@@ -105,6 +105,17 @@ class DBStorage():
         self.cursor.callproc("sp_update_user", lis)
         self.db.commit()
 
+    def verify(self, email):
+        """
+        Method that checks if an
+        email is in the database
+        """
+        self.cursor.execute("SELECT * FROM user WHERE email='{}'".format(email)
+                            )
+        tupla = self.cursor.fetchall()
+        for dictionary in tupla:
+            return dictionary
+
     def delete(self, tablename, id):
         """
         Method that receives the name of the
@@ -114,3 +125,21 @@ class DBStorage():
         self.cursor.execute("DELETE FROM {} WHERE id={};".format(tablename,
                                                                  id))
         self.db.commit()
+
+    def count(self):
+        """
+        Method that returns a dictionary with all
+        the tables and the number of their records
+        """
+        str_1 = "SELECT table_name, table_rows FROM INFORMATION_SCHEMA.TABLES"
+        query = str_1 + " WHERE TABLE_SCHEMA = 'gbs_dev_db'"
+
+        self.cursor.execute(query)
+        tupla = self.cursor.fetchall()
+
+        dict_result = {}
+        for dictionary in tupla:
+            values = list(dictionary.values())
+            dict_result[values[0]] = values[1]
+
+        return dict_result
