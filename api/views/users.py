@@ -99,5 +99,5 @@ def put_user(user_id=None):
                 if key == key_2:
                     user[key] = value
 
-    storage.update(user, user_id)
+    storage.update(user, user_id, "sp_update_user")
     return jsonify(storage.to_dict("User", user)), 200
