@@ -81,7 +81,7 @@ class DBStorage():
 
         return dic
 
-    def update(self, dic, id):
+    def update(self, dic, id, procedure):
         """
         Method that receives a dictionary from
         the api and an id, to update its indicated data
@@ -102,7 +102,7 @@ class DBStorage():
         for values in dic.values():
             lis.append(values)
 
-        self.cursor.callproc("sp_update_user", lis)
+        self.cursor.callproc(procedure, lis)
         self.db.commit()
 
     def verify(self, email):
@@ -143,3 +143,22 @@ class DBStorage():
             dict_result[values[0]] = values[1]
 
         return dict_result
+
+    def filters(self, tablename, filtro, value):
+        """
+        Method that filters any table with Where
+        """
+        if not tablename or not filtro or not value:
+            return None
+
+        list_result = []
+
+        self.cursor.execute("SELECT * FROM {} WHERE {}={}".format(tablename,
+                                                                  filtro,
+                                                                  value))
+        tupla = self.cursor.fetchall()
+
+        for dictionary in tupla:
+            list_result.append(dictionary)
+
+        return list_result
