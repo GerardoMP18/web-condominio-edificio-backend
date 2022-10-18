@@ -9,3 +9,4 @@ from api.views.index import *
 from api.views.users import *
 from api.views.bulk_load import *
 from api.views.login import *
+from api.views.departaments import *
