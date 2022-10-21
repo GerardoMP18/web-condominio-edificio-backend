@@ -4,10 +4,13 @@ Flask Application
 """
 from flask import Flask, jsonify
 from api.views import app_views
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.register_blueprint(app_views)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 @app.errorhandler(404)
