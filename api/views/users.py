@@ -7,6 +7,7 @@ from api.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.user import User
+import re
 
 
 @app_views.route("/users", methods=['GET'],
@@ -33,7 +34,7 @@ def get_user_id(user_id=None):
     """
     user = storage.get("user", int(user_id))
     if not user:
-        abort(404)
+        abort(400, description="User not found")
 
     return jsonify(storage.to_dict("User", user))
 
@@ -46,7 +47,7 @@ def delete_user(user_id=None):
     """
     user = storage.get("user", int(user_id))
     if not user:
-        abort(404)
+        abort(400, description="User not found")
 
     storage.delete("user", int(user_id))
 
@@ -62,8 +63,8 @@ def post_user():
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    obligatory = ["first_name", "id_document_type", "last_name",
-                  "email", "password", "number_document",
+    obligatory = ["first_name", "last_name", "id_document_type",
+                  "number_document", "email", "password",
                   "phone", "birth_date"]
 
     for needed in obligatory:
@@ -71,6 +72,16 @@ def post_user():
             abort(400, description="Missing {}".format(needed))
 
     data = request.get_json()
+    email_user = data["email"]
+
+    regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+    if not re.search(regex, email_user):
+        abort(400, description="Invalid Email")
+
+    comprobation = storage.verify(email_user)
+    if comprobation:
+        abort(400, description="Email has already been used")
+
     instance = User(**data)
     instance.new('sp_add_user')
 
@@ -85,7 +96,7 @@ def put_user(user_id=None):
     """
     user = storage.get("user", int(user_id))
     if not user:
-        abort(404)
+        abort(400, description="User not found")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -93,6 +104,18 @@ def put_user(user_id=None):
     ignore = ['id', 'created_at', 'updated_at']
 
     data = request.get_json()
+
+    if 'email' in data:
+        email_user = data["email"]
+
+        regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+        if not re.search(regex, email_user):
+            abort(400, description="Invalid Email")
+
+        comprobation = storage.verify(email_user)
+        if comprobation:
+            abort(400, description="Email has already been used")
+
     for key, value in data.items():
         for key_2 in user.keys():
             if key not in ignore:

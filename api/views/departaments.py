@@ -9,17 +9,21 @@ from models import storage
 from models.departament import Departament
 
 
-@app_views.route("/building/<building_id>/departaments", methods=['GET'],
+@app_views.route("/buildings/<building_id>/departaments", methods=['GET'],
                  strict_slashes=False)
 def get_departaments(building_id=None):
     """
     Method that returns the list of all departaments objects
     """
+    building = storage.get("building", int(building_id))
+    if not building:
+        abort(400, description="Building not found")
+
     list_departaments = []
     departaments = storage.filters("departament", 'id_building',
                                    int(building_id))
     if not departaments:
-        abort(404)
+        abort(400, description="Departaments not found")
 
     for departament in departaments:
         list_departaments.append(storage.to_dict("Departament", departament))
@@ -36,7 +40,7 @@ def get_departament_id(departament_id=None):
     """
     departament = storage.get("departament", int(departament_id))
     if not departament:
-        abort(404)
+        abort(400, description="Departament not found")
 
     return jsonify(storage.to_dict("Departament", departament))
 
@@ -49,14 +53,14 @@ def delete_departament(departament_id=None):
     """
     departament = storage.get("departament", int(departament_id))
     if not departament:
-        abort(404)
+        abort(400, description="Department not found")
 
     storage.delete("departament", int(departament_id))
 
     return jsonify({}), 200
 
 
-@app_views.route("/building/<building_id>/departaments", methods=['POST'],
+@app_views.route("/buildings/<building_id>/departaments", methods=['POST'],
                  strict_slashes=False)
 def post_departament(building_id=None):
     """
@@ -64,7 +68,7 @@ def post_departament(building_id=None):
     """
     building = storage.get("building", int(building_id))
     if not building:
-        abort(404)
+        abort(400, description="Building not found")
 
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -92,7 +96,7 @@ def put_departament(departament_id=None):
     """
     departament = storage.get("departament", int(departament_id))
     if not departament:
-        abort(404)
+        abort(400, description="Departament not found")
 
     if not request.get_json():
         abort(400, description="Not a JSON")

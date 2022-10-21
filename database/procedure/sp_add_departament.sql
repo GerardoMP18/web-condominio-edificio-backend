@@ -1,3 +1,5 @@
+-- procedure create departament --
+
 USE gbs_dev_db;
 
 DROP PROCEDURE IF EXISTS sp_add_departament;
