@@ -11,10 +11,10 @@ class User(BaseModel):
     by various attributes
     """
     first_name = ""
-    id_document_type = 0
     last_name = ""
+    id_document_type = 0
+    number_document = 0
     email = ""
     password = ""
-    number_document = 0
     phone = 0
     birth_date = ""
