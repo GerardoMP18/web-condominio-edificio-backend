@@ -62,8 +62,8 @@ def post_condominium():
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    obligatory = ["name", "ruc", "phone", "email", "landline",
-                  "user_created"]
+    obligatory = ["name", "ruc", "phone", "email", "address",
+                  "landline", "user_created"]
 
     for needed in obligatory:
         if needed not in request.get_json():
