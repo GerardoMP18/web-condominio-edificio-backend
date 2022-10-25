@@ -6,7 +6,7 @@ RestFul API actions for buildings
 from api.views import app_views
 from flask import jsonify, abort, request
 from models import storage
-from models.building import Building
+from models.building import Building, buildings_get, building_get
 
 
 @app_views.route("/condominiums/<condominium_id>/buildings", methods=['GET'],
@@ -20,8 +20,7 @@ def get_buildings(condominium_id=None):
         abort(400, description="Condominium not found")
 
     list_buildings = []
-    buildings = storage.filters("building", 'id_condominium',
-                                int(condominium_id))
+    buildings = buildings_get(int(condominium_id))
     if not buildings:
         abort(400, description="Buildings not found")
 
@@ -38,7 +37,7 @@ def get_building_id(building_id=None):
     Method that returns the values of
     a building by means of their ID
     """
-    building = storage.get("building", int(building_id))
+    building = building_get(int(building_id))
     if not building:
         abort(400, description="Building not found")
 
@@ -73,8 +72,8 @@ def post_building(condominium_id=None):
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    obligatory = ["id_condominium", "name_building", "description",
-                  "floor", "address", "user_created"]
+    obligatory = ["id_condominium", "name_building", "ruc", "phone",
+                  "email", "floor", "address", "user_created"]
 
     for needed in obligatory:
         if needed not in request.get_json():
