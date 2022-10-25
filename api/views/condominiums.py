@@ -7,6 +7,7 @@ from api.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.condominium import Condominium
+import re
 
 
 @app_views.route("/condominiums", methods=['GET'],
@@ -70,6 +71,16 @@ def post_condominium():
             abort(400, description="Missing {}".format(needed))
 
     data = request.get_json()
+    email_condominium = data["email"]
+
+    regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+    if not re.search(regex, email_condominium):
+        abort(400, description="Invalid Email")
+
+    comprobation = storage.verify('condominium', email_condominium)
+    if comprobation:
+        abort(400, description="Email has already been used")
+
     instance = Condominium(**data)
     instance.new('sp_add_condominium')
 
@@ -92,6 +103,18 @@ def put_condominium(condominium_id=None):
     ignore = ['id', 'created_at', 'updated_at']
 
     data = request.get_json()
+
+    if 'email' in data:
+        email_condominium = data["email"]
+
+        regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+        if not re.search(regex, email_condominium):
+            abort(400, description="Invalid Email")
+
+        comprobation = storage.verify('condominium', email_condominium)
+        if comprobation:
+            abort(400, description="Email has already been used")
+
     for key, value in data.items():
         for key_2 in condominium.keys():
             if key not in ignore:
