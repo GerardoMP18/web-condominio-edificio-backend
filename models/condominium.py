@@ -14,6 +14,7 @@ class Condominium(BaseModel):
     ruc = 0
     phone = 0
     email = ""
+    address = ""
     landline = 0
     description = ""
     user_created = ""
