@@ -7,6 +7,7 @@ from api.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.building import Building, buildings_get, building_get
+import re
 
 
 @app_views.route("/condominiums/<condominium_id>/buildings", methods=['GET'],
@@ -80,6 +81,16 @@ def post_building(condominium_id=None):
             abort(400, description="Missing {}".format(needed))
 
     data = request.get_json()
+    email_building = data["email"]
+
+    regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+    if not re.search(regex, email_building):
+        abort(400, description="Invalid Email")
+
+    comprobation = storage.verify('building', email_building)
+    if comprobation:
+        abort(400, description="Email has already been used")
+
     instance = Building(**data)
     instance.new('sp_add_building')
 
@@ -102,6 +113,18 @@ def put_building(building_id=None):
     ignore = ['id', 'created_at', 'updated_at']
 
     data = request.get_json()
+
+    if 'email' in data:
+        email_building = data["email"]
+
+        regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
+        if not re.search(regex, email_building):
+            abort(400, description="Invalid Email")
+
+        comprobation = storage.verify('building', email_building)
+        if comprobation:
+            abort(400, description="Email has already been used")
+
     for key, value in data.items():
         for key_2 in building.keys():
             if key not in ignore:
