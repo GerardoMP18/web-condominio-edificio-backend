@@ -6,8 +6,38 @@ RestFul API actions for users
 from api.views import app_views
 from flask import jsonify, abort, request
 from models import storage
-from models.user import User
+from models.user import User, roles_get
 import re
+
+
+@app_views.route("/owners", methods=['GET'],
+                 strict_slashes=False)
+def get_owners():
+    """
+    GET method that returns all owners
+    """
+    list_owners = []
+    owners = roles_get(2)
+
+    for owner in owners:
+        list_owners.append(storage.to_dict("Owner", owner))
+
+    return jsonify(list_owners)
+
+
+@app_views.route("/tenants", methods=['GET'],
+                 strict_slashes=False)
+def get_tenants():
+    """
+    GET method that returns all tenants
+    """
+    list_tenants = []
+    tenants = roles_get(3)
+
+    for tenant in tenants:
+        list_tenants.append(storage.to_dict("Tenant", tenant))
+
+    return jsonify(list_tenants)
 
 
 @app_views.route("/users", methods=['GET'],
@@ -65,7 +95,7 @@ def post_user():
 
     obligatory = ["first_name", "last_name", "id_document_type",
                   "number_document", "email", "password",
-                  "phone", "birth_date"]
+                  "phone", "birth_date", "id_role"]
 
     for needed in obligatory:
         if needed not in request.get_json():
@@ -78,7 +108,7 @@ def post_user():
     if not re.search(regex, email_user):
         abort(400, description="Invalid Email")
 
-    comprobation = storage.verify(email_user)
+    comprobation = storage.verify('user', email_user)
     if comprobation:
         abort(400, description="Email has already been used")
 
@@ -112,7 +142,7 @@ def put_user(user_id=None):
         if not re.search(regex, email_user):
             abort(400, description="Invalid Email")
 
-        comprobation = storage.verify(email_user)
+        comprobation = storage.verify('user', email_user)
         if comprobation:
             abort(400, description="Email has already been used")
 
