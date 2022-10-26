@@ -12,10 +12,11 @@ CREATE PROCEDURE sp_add_user(
     IN email VARCHAR(120),
     IN password VARCHAR(40),
     IN phone INT,
-    IN birth_date DATE
+    IN birth_date DATE,
+    IN id_role SMALLINT
 )
 BEGIN
-    INSERT INTO user (first_name,last_name,id_document_type,number_document,email,password,phone,birth_date)
-    VALUE (first_name,last_name,id_document_type,number_document,email,password,phone,birth_date);
+    INSERT INTO user (first_name,last_name,id_document_type,number_document,email,password,phone,birth_date,id_role)
+    VALUE (first_name,last_name,id_document_type,number_document,email,password,phone,birth_date,id_role);
 END $$
 DELIMITER ;
