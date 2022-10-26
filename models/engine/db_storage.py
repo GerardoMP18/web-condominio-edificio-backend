@@ -155,7 +155,7 @@ class DBStorage():
         list_result = []
 
         str_1 = "SELECT * FROM {} WHERE".format(tablename)
-        query = " {}={} ORDER BY id DESC;".format(filtro, value)
+        query = str_1 + " {}={} ORDER BY id DESC;".format(filtro, value)
 
         self.cursor.execute(query)
         tupla = self.cursor.fetchall()
