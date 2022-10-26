@@ -34,7 +34,8 @@ class DBStorage():
         """
         dict_result = {}
 
-        self.cursor.execute("SELECT * FROM {};".format(tablename))
+        query = "SELECT * FROM {} ORDER BY id DESC;".format(tablename)
+        self.cursor.execute(query)
         tupla = self.cursor.fetchall()
 
         for dictionary in tupla:
@@ -105,13 +106,13 @@ class DBStorage():
         self.cursor.callproc(procedure, lis)
         self.db.commit()
 
-    def verify(self, email):
+    def verify(self, tablename, email):
         """
         Method that checks if an
         email is in the database
         """
-        self.cursor.execute("SELECT * FROM user WHERE email='{}'".format(email)
-                            )
+        query = "SELECT * FROM {} WHERE email='{}'".format(tablename, email)
+        self.cursor.execute(query)
         tupla = self.cursor.fetchall()
         for dictionary in tupla:
             return dictionary
@@ -153,9 +154,10 @@ class DBStorage():
 
         list_result = []
 
-        self.cursor.execute("SELECT * FROM {} WHERE {}={}".format(tablename,
-                                                                  filtro,
-                                                                  value))
+        str_1 = "SELECT * FROM {} WHERE".format(tablename)
+        query = " {}={} ORDER BY id DESC;".format(filtro, value)
+
+        self.cursor.execute(query)
         tupla = self.cursor.fetchall()
 
         for dictionary in tupla:
