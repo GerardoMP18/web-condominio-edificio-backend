@@ -13,7 +13,8 @@ CREATE PROCEDURE sp_update_user(
     IN p_email VARCHAR(120),
     IN p_password VARCHAR(40),
     IN p_phone INT,
-    IN p_birth_date DATE
+    IN p_birth_date DATE,
+    IN p_id_role SMALLINT
 )
 BEGIN
     UPDATE user
@@ -25,7 +26,8 @@ BEGIN
     email = p_email,
     password = p_password,
     phone = p_phone,
-    birth_date = p_birth_date
+    birth_date = p_birth_date,
+    id_role = p_id_role
     WHERE id = p_id;
 END $$
 DELIMITER ;
