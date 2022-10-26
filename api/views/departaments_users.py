@@ -8,6 +8,7 @@ from flask import jsonify, abort, request
 from models import storage
 from models.departament_user import Departament_User, filter_departament
 from models.departament_user import delete_dpt_user
+from models.user import verify_dpto_owner, verify_dpto_tenant
 
 
 @app_views.route("/users/<user_id>/departaments", methods=['GET'],
@@ -57,16 +58,34 @@ def post_departament_user(user_id, departament_id):
     Method that link departament user
     """
     data_result = {}
+
     user = storage.get("user", int(user_id))
     if not user:
         abort(400, description="User not found")
-
-    data_result["id_user"] = user_id
 
     departament = storage.get("departament", int(departament_id))
     if not departament:
         abort(400, description="Departament not found")
 
+    # ----------------------------------------------------------
+    role = user["id_role"]
+    if role == 1:
+        abort(400, description="Admins cannot be assigned to a department")
+
+    elif role == 2:
+        if not verify_dpto_owner(departament_id):
+            abort(400, description="Departament already has an Owner")
+
+    elif role == 3:
+        verify = verify_dpto_tenant(departament_id)
+        if verify is None:
+            abort(400, description="Need to assign an owner")
+
+        elif verify is False:
+            abort(400, description="Departament already has an Tenant")
+    # -----------------------------------------------------------
+
+    data_result["id_user"] = user_id
     data_result["id_departament"] = departament_id
 
     if not request.get_json():
