@@ -30,7 +30,7 @@ def login_user():
     email_user = data["email"]
     pwd_user = data["password"]
 
-    user_found = storage.verify(email_user)
+    user_found = storage.verify('user', email_user)
     if not user_found:
         abort(400, description="Email Not Found")
 
