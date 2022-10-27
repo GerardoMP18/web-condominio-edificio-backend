@@ -90,3 +90,23 @@ def verify_dpto_tenant(id_departament=None):
             return False
 
     return True
+
+
+def search_fullname_id(fullname=None):
+    """
+    Method to obtain the id according to the attribute searched for
+    by fixed word
+    """
+    sql = "select id, concat(first_name,' ',last_name) as fullname, id_role \
+           from user \
+           where id_role IN ( \
+            select id \
+            from role \
+            where name = 'Propietario' or name = 'Administrador') \
+            having fullname like '%{}%'".format(fullname)
+
+    models.storage.cursor.execute(sql)
+
+    row = models.storage.cursor.fetchall()
+    for dictionary in row:
+        return dictionary.get('id')
