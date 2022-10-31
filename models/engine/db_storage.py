@@ -19,8 +19,8 @@ class DBStorage():
         Method that initializes the
         connection to the database
         """
-        self.db = MySQLdb.connect(user='root', passwd='1999151',
-                                  db='gbs_dev_db', host='localhost',
+        self.db = MySQLdb.connect(user='root', passwd='mysql',
+                                  db='gbs_dev_db_test', host='localhost',
                                   port=3306,
                                   cursorclass=MySQLdb.cursors.DictCursor)
 
@@ -155,7 +155,7 @@ class DBStorage():
         list_result = []
 
         str_1 = "SELECT * FROM {} WHERE".format(tablename)
-        query = " {}={} ORDER BY id DESC;".format(filtro, value)
+        query = str_1 + " {}={} ORDER BY id DESC;".format(filtro, value)
 
         self.cursor.execute(query)
         tupla = self.cursor.fetchall()
@@ -164,3 +164,37 @@ class DBStorage():
             list_result.append(dictionary)
 
         return list_result
+
+    # -------------------INI-GERARDO-CARGA MASIVA-HELPER---------------------
+    def create_many(self, data=[], carga=None):
+        """
+        Method that allows further insertion through the user and income tables
+        """
+        if carga == 'usuarios':
+            sql = "INSERT INTO user (first_name,last_name,id_document_type,\
+                   number_document,email,password,phone,birth_date,id_role) \
+                   VALUE (%s,%s,%s,%s,%s,MD5(%s),%s,%s,%s)"
+
+            self.cursor.executemany(sql, data)
+        elif carga == 'ingresos':
+            sql = "insert into income (nro_recibo,id_user,id_departament, \
+                   id_type_payment,dia,mes,año,numero_operacion,banco, \
+                   lugar_pago,modalidad,id_concepto,año_concepto,import) \
+                   values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            self.cursor.executemany(sql, data)
+        self.db.commit()
+
+    def get_id(self, table=None, atributo=None, name=None):
+        """
+        Method to obtain the id according to the attribute searched for
+        by fixed word
+        """
+        self.cursor.execute("SELECT id, {} FROM {} where {} \
+            LIKE %(name)s".format(atributo, table, atributo), {
+            'name': name
+        })
+        row = self.cursor.fetchall()
+        for dictionary in row:
+            return dictionary.get('id')
+
+    # -------------------FIN-GERARDO-CARGA MASIVA-HELPER---------------------
