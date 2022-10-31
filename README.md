@@ -178,11 +178,11 @@ _`carga_masiva_user.xlsx`_ - excel for mass loading of condominium and building 
 No known bugs at this time.
 
 ## Authors
-Fernando J. Gonzales Pradinett. - [Github]()[Twitter]()
-Gerardo Marín. - [Github]()[Twitter]()
-Paolo Abarca. - [Github]()[Twitter]()
-Dhanna Palomino. - [Github]()[Twitter]()
-Juan Salinas. - [Github]()[Twitter]()
+- Fernando J. Gonzales Pradinett. - [Github]()[Twitter]()
+- Gerardo Marín. - [Github]()[Twitter]()
+- Paolo Abarca. - [Github]()[Twitter]()
+- Dhanna Palomino. - [Github]()[Twitter]()
+- Juan Salinas. - [Github]()[Twitter]()
 
 ## License
 Public Domain. No copy write protection.
