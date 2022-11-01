@@ -12,8 +12,9 @@
 <h4 align="center">🫧For [GBS]🫧. </h4>
 
 
-![https://dhannaps03.wixsite.com/my-site](https://github.com/gpradinett/Tools/blob/main/images/unknown.png)
+![](https://github.com/gpradinett/Tools/blob/main/images/unknown.png)
 
+[DEMO](https://dhannaps03.wixsite.com/my-site)
 
 The backend is the first segment of the Building and Condominium Management System for gbs project that will collectively cover the fundamentals of high-level programming. The objective of this project is to implement in our system the administration of condominiums and buildings that can make ordinary and extraordinary charges to the tenants in an automated way, see the history of receipts and their details. As part of the administration, you can see income and expenses, create new condominiums, owners and tenants, assign them to your building and/or department.
 
