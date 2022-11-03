@@ -10,6 +10,21 @@ from models.building import Building, buildings_get, building_get
 import re
 
 
+@app_views.route("/buildings", methods=['GET'],
+                 strict_slashes=False)
+def get_buildings_all():
+    """
+    Method that returns the list of all buildings
+    """
+    list_buildings = []
+    buildings = storage.all("building").values()
+
+    for building in buildings:
+        list_buildings.append(storage.to_dict("Building", building))
+
+    return jsonify(list_buildings)
+
+
 @app_views.route("/condominiums/<condominium_id>/buildings", methods=['GET'],
                  strict_slashes=False)
 def get_buildings(condominium_id=None):
@@ -121,7 +136,8 @@ def put_building(building_id=None):
         if not re.search(regex, email_building):
             abort(400, description="Invalid Email")
 
-        comprobation = storage.verify('building', email_building)
+        comprobation = storage.verify('building', email_building,
+                                      int(building_id))
         if comprobation:
             abort(400, description="Email has already been used")
 
