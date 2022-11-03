@@ -111,7 +111,8 @@ def put_condominium(condominium_id=None):
         if not re.search(regex, email_condominium):
             abort(400, description="Invalid Email")
 
-        comprobation = storage.verify('condominium', email_condominium)
+        comprobation = storage.verify('condominium', email_condominium,
+                                      int(condominium_id))
         if comprobation:
             abort(400, description="Email has already been used")
 
