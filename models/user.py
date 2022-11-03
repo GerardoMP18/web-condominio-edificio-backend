@@ -28,13 +28,13 @@ def roles_get(role_id=None):
     """
     list_result = []
 
-    str_1 = "SELECT user.first_name, user.last_name, building.name_building,"
+    str_1 = "SELECT u.id, u.first_name, u.last_name, building.name_building,"
     str_2 = str_1 + " departament.floor, departament.number_departament FROM"
-    str_3 = str_2 + " user LEFT JOIN departament_user ON user.id ="
+    str_3 = str_2 + " user AS u LEFT JOIN departament_user ON u.id ="
     str_4 = str_3 + " departament_user.id_user LEFT JOIN departament ON"
     str_5 = str_4 + " departament_user.id_departament=departament.id LEFT JOIN"
     str_6 = str_5 + " building ON departament.id_building = building.id WHERE"
-    query = str_6 + " id_role={};".format(role_id)
+    query = str_6 + " id_role={} ORDER BY id DESC;".format(role_id)
 
     models.storage.cursor.execute(query)
 
