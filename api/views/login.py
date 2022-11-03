@@ -32,13 +32,12 @@ def login_user():
 
     user_found = storage.verify('user', email_user)
     if not user_found:
-        abort(400, description="Email Not Found")
+        return "Email Not Found", 400
 
     encrypt_pwd = hashlib.md5(pwd_user.encode())
     pwd_user = encrypt_pwd.hexdigest()
 
     if not user_found["password"] == pwd_user:
-        abort(400, description="Password Incorrect")
+        return "Password Incorrect", 400
 
-    dic = {"success": "Bienvenido al sistema"}
-    return jsonify(dic), 201
+    return jsonify(user_found), 201
