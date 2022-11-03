@@ -9,6 +9,21 @@ from models import storage
 from models.departament import Departament
 
 
+@app_views.route("/departaments", methods=['GET'],
+                 strict_slashes=False)
+def get_departaments_all():
+    """
+    Method that returns the list of all departaments
+    """
+    list_departaments = []
+    departaments = storage.all("departament").values()
+
+    for departament in departaments:
+        list_departaments.append(storage.to_dict("Departament", departament))
+
+    return jsonify(list_departaments)
+
+
 @app_views.route("/buildings/<building_id>/departaments", methods=['GET'],
                  strict_slashes=False)
 def get_departaments(building_id=None):
