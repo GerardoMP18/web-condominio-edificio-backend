@@ -19,8 +19,8 @@ class DBStorage():
         Method that initializes the
         connection to the database
         """
-        self.db = MySQLdb.connect(user='root', passwd='mysql',
-                                  db='gbs_dev_db_test', host='localhost',
+        self.db = MySQLdb.connect(user='root', passwd='1999151',
+                                  db='gbs_dev_db', host='localhost',
                                   port=3306,
                                   cursorclass=MySQLdb.cursors.DictCursor)
 
@@ -106,12 +106,18 @@ class DBStorage():
         self.cursor.callproc(procedure, lis)
         self.db.commit()
 
-    def verify(self, tablename, email):
+    def verify(self, tablename, email, id=None):
         """
         Method that checks if an
         email is in the database
         """
-        query = "SELECT * FROM {} WHERE email='{}'".format(tablename, email)
+        if id is None:
+            query = "SELECT * FROM {} WHERE email='{}'".format(tablename,
+                                                               email)
+        else:
+            query = "SELECT * FROM {} WHERE email='{}'\
+                     AND id!={}".format(tablename, email, id)
+
         self.cursor.execute(query)
         tupla = self.cursor.fetchall()
         for dictionary in tupla:
